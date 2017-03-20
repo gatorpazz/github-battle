@@ -6,7 +6,7 @@ import UserDetailsWrapper from './UserDetailsWrapper'
 import MainContainer from './MainContainer'
 import Loading from './Loading'
 
-function StartOver() {
+function StartOver () {
   return (
     <div className='col-sm-12' style={space}>
       <Link to='/playerOne'>
@@ -16,7 +16,7 @@ function StartOver() {
   )
 }
 
-function Tie() {
+function Tie () {
   return (
     <MainContainer>
       <h1>It's a Tie!</h1>
@@ -24,7 +24,7 @@ function Tie() {
     </MainContainer>
   )
 }
-function Results({isLoading, scores, playerInfo}) {
+function Results ({isLoading, scores, playersInfo}) {
   if (isLoading === true) {
     return <Loading />
   }
