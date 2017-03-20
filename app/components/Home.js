@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router'
 import MainContainer from '../components/MainContainer'
 
-var Home = React.createClass({
+const Home = React.createClass({
   render: function() {
     return (
       <MainContainer>

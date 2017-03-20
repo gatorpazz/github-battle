@@ -1,24 +1,26 @@
-import React from 'react'
+ import React from 'react'
 import Results from '../components/Results'
 import { battle } from '../utils/githubHelpers'
 
 const ResultsContainer = React.createClass({
-  getInitialState: function() {
+  getInitialState () {
     return{
       isLoading: true,
       scores: []
     }
   },
-  componentDidMount: function() {
-    battle(this.props.location.state.playersInfo)
-      .then(function(scores) {
-        this.setState({
-          scores: scores,
-          isLoading: false
-        })
-      }.bind(this))
+  async componentDidMount () {
+    try {
+      const scores = await battle(this.props.location.state.playersInfo)
+      this.setState({
+        scores,
+        isLoading: false
+      })
+    } catch (error) {
+      console.log('Error in ResultsContainer:', error)
+    }
   },
-  render: function() {
+  render () {
     return (
       <Results
         isLoading={this.state.isLoading}
