@@ -1,19 +1,16 @@
-import React from 'react'
-import { Link } from 'react-router'
-import MainContainer from '../components/MainContainer'
+var React = require('react');
+var Link = require('react-router-dom').Link;
 
-const Home = React.createClass({
-  render: function() {
-    return (
-      <MainContainer>
-        <h1>Github Battle</h1>
-        <p className="lead">Some Fancy Shit</p>
-        <Link to='/playerOne'>
-          <button type='button' className='btn btn-lg btn-success'>Get Started</button>
-        </Link>
-      </MainContainer>
-    )
-  }
-});
+function Home () {
+  return (
+    <div>
+      <h1>Github Battle: Battle your friends... and stuff.</h1>
 
-export default Home
+      <Link className='button' to='/battle'>
+        Battle
+      </Link>
+    </div>
+  )
+}
+
+module.exports = Home;
