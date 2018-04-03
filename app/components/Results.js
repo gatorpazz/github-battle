@@ -1,57 +1,79 @@
-import React, { PropTypes } from 'react'
-import { space } from '../styles'
-import { Link } from 'react-router'
-import UserDetails from './UserDetails'
-import UserDetailsWrapper from './UserDetailsWrapper'
-import MainContainer from './MainContainer'
-import Loading from './Loading'
+var React = require('react');
+var queryString = require('query-string');
+var api = require('../utils/api');
+var Link = require('react')
 
-function StartOver () {
-  return (
-    <div className='col-sm-12' style={space}>
-      <Link to='/playerOne'>
-        <button type='button' className='btn btn-lg btn-danger'>Start Over</button>
-      </Link>
-    </div>
-  )
-}
+class Results extends React.Component {
+  constructor(props) {
+    super(props);
 
-function Tie () {
-  return (
-    <MainContainer>
-      <h1>It's a Tie!</h1>
-      <StartOver />
-    </MainContainer>
-  )
-}
-function Results ({isLoading, scores, playersInfo}) {
-  if (isLoading === true) {
-    return <Loading />
+    this.state = {
+      winner: null,
+      loser: null,
+      error: null,
+      loading: true
+    }
   }
-  if (scores[0] === scores[1]) {
+  componentDidMount() {
+    var players = queryString.parse(this.props.location.search);
+
+    api.battle([
+      players.playerOneName,
+      players.playerTwoName
+    ]).then(function(results) {
+      if (results === null) {
+        return this.setState(function () {
+          return {
+            error: 'Looks like there was an error. Check that both users exist on Github',
+            loading: false
+          }
+        });
+      }
+
+      this.setState(function () {
+        return {
+          error: null,
+          winner: results[0],
+          loser: results[1],
+          loading: false
+        }
+      })
+    }.bind(this));
+  }
+  render() {
+    var error = this.state.error;
+    var winner = this.state.winner;
+    var loser = this.state.loser;
+    var loading = this.state.loading;
+
+    if (loading === true) {
+      return <p>Loading</p>
+    }
+
+    if (error) {
+      return (
+        <div>
+          <p>{error}</p>
+          <Link to='/battle'>Reset</Link>
+        </div>
+      )
+    }
+
     return (
-      <Tie scores={scores} playersInfo={playersInfo}/>
+      <div className='row'>
+        <Player
+          label='Winner'
+          score={winner.score}
+          profile={winner.profile}
+        />
+        <Player
+          label='Loser'
+          score={loser.score}
+          profile={loser.profile}
+        />
+      </div>
     )
   }
-  const winningIndex = scores[0] > scores[1] ? 0 : 1;
-  const losingIndex = winningIndex === 0 ? 1 : 0;
-  return (
-    <MainContainer>
-      <h1>Results</h1>
-      <div className='col-sm-8 col-sm-offset-2'>
-        <UserDetailsWrapper header='Winner'>
-          <UserDetails score={scores[winningIndex]} info={playersInfo[winningIndex]} />
-        </UserDetailsWrapper>
-        <UserDetailsWrapper header='Loser'>
-          <UserDetails score={scores[losingIndex]} info={playersInfo[losingIndex]} />
-        </UserDetailsWrapper>
-      </div>
-      <StartOver />
-    </MainContainer>
-  )
 }
-Results.propTypes = {
-  playersInfo: PropTypes.array.isRequired,
-  scores: PropTypes.array.isRequired
-}
-export default Results
+
+module.exports = Results;
