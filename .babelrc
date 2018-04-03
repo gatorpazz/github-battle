@@ -3,5 +3,6 @@
     "react",
     "babel-preset-es2015",
     "babel-preset-stage-3"
-  ]
+  ],
+  "plugins": ["transform-class-properties"]
 }
